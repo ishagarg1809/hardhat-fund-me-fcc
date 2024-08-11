@@ -7,7 +7,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     const { deploy, log } = deployments
     // getting the deployer account from named accounts
     const { deployer } = await getNamedAccounts()
-    
+
     //if contract doesn't exist, we deploy a minimal version for our local testing
     // use mock when going for local/hardhat network
     let ethUsdPriceFeedAddress
@@ -18,16 +18,21 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         ethUsdPriceFeedAddress = networkConfig[network.name]["ethUsdPriceFeed"]
     }
 
+    const args = [ethUsdPriceFeedAddress]
+
     const fundMe = await deploy("FundMe", {
         from: deployer,
-        args: [ethUsdPriceFeedAddress], // constructor args -> priceFeedAddress in this case
+        args: args, // constructor args -> priceFeedAddress in this case
         log: true,
-        waitConfirmations: network.config.blockConfirmations || 1, // wait for block confirmations to index our txn 
+        waitConfirmations: network.config.blockConfirmations || 1, // wait for block confirmations to index our txn
     })
 
     // verify our contract if network is not local
-    if(!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
-        await verify(fundMe.address, [ethUsdPriceFeedAddress])
+    if (
+        !developmentChains.includes(network.name) &&
+        process.env.ETHERSCAN_API_KEY
+    ) {
+        await verify(fundMe.address, args)
     }
 
     log("---------------------------------------------")

@@ -21,8 +21,8 @@ module.exports = {
         sepolia: {
             url: SEPOLIA_RPC_URL,
             accounts: [PRIVATE_KEY],
-            ChainId: 11155111,
-            blockConfirmations: 6 //blocks to wait after the contract is deployed
+            chainId: 11155111,
+            blockConfirmations: 6, //blocks to wait after the contract is deployed
         },
     },
     gasReporter: {
